@@ -3,13 +3,15 @@ import evaluate
 import numpy as np
 
 class Gene():
-    def __init__  (self,baseprenum,parameter,popsize,baseusingnum,choosenum):
+    def __init__  (self,baseprenum,parameter,popsize,baseusingnum,choosenum,crosspro,mutepro):
         #parameter = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost] htb hre is useless
         self.baseprenum = baseprenum     #the num of all base could be used
         self.baseusingnum = baseusingnum #the num of base will be used
         self.popsize = popsize
         self.parameter = parameter
         self.choosenum = choosenum  #the size of chooseset
+        self.crosspro = crosspro #the probability of cross
+        self.mutepro = mutepro #the probability of mutation
         
     def individual(self):
         indexnum = [i for i in range(self.baseprenum)]
@@ -39,20 +41,23 @@ class Gene():
         popfitness = np.array(popfitness)
         popfitness = -popfitness + fmax
         popfitness = list(popfitness)
-        return popfitness
-        
+        return popfitness   #fitness value of each individual in pop
+    
+    
+    self.F = self.fitness()     
+    
     def choose(self):
         chooseset=[]
-        sumfitness = sum(self.fitness())
-        choosepro = [i/sumfitness for i in self.fitness()]
-        choosesumpro = [self.fitness[0]]*len(self.fitness)
-        for j in range(1,len(self.fitness)):
-            choosesumpro[j] = choosesumpro[j-1]+self.fitness[j]
+        sumfitness = sum(self.F)
+        choosepro = [i/sumfitness for i in self.F]
+        choosesumpro = [self.F[0]]*len(self.F)
+        for j in range(1,len(self.F)):
+            choosesumpro[j] = choosesumpro[j-1]+self.F[j]
         while 1:
             a=random.uniform(0,1)
             if a < choosesumpro[0]:
                 choose.append(0)
-            for k in range(1,len(self.fitness))
+            for k in range(1,len(self.F))
                 if choosesumpro[k-1] <= a and choosesumpro[k] > a:
                     chooseset.append(k)
             if len(set(chooseset)) == self.choosenum:
@@ -62,5 +67,10 @@ class Gene():
     
     
     def cross(self):
+        chooseset = self.chooseset()
+        chooseset = [str(i) for i in chooseset]
+        crosspre = dict(zip(chooseset,self.F))
+        sorted(crosspre.items, key = crosspre.values)
+        
     
     def mutation(self):
