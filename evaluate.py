@@ -3,14 +3,15 @@ from math import sqrt, log10
 from scipy.spatial import cKDTree
 class Evaluate:
 	def __init__(self,parameter):
-	#parameter = [basex,basey,x,y,baseh,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,obaseallx,obaseally,ncost,ocost]
-		self.Nsample = len(parameter[2])
+		#parameter = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
+		#print(parameter)
+		self.Nsample = len(parameter[3])
 		self.Nbase = len(parameter[0])
 		self.basex = parameter[0]
 		self.basey = parameter[1]
-		self.x = parameter[2]
-		self.y = parameter[3]
-		self.baseh = parameter[4]
+		self.x = parameter[3]
+		self.y = parameter[4]
+		self.baseh = parameter[2]
 		self.h = parameter[5]
 		self.fc = parameter[6]
 		self.Tx = parameter[7]
@@ -97,7 +98,7 @@ class Evaluate:
 		cover = self.coverage()
 		costvalue = self.cost()
 		if cover >= self.coverthre:
-			evalute = cost*1/costvalue
+			evalute = costvalue * (1+cover)
 		else :
 			evalute = self.Nsample * self.ncost#if coverage is less than threshold, then return a much larger value than normal evalutae num
 		return evalute

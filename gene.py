@@ -1,3 +1,4 @@
+#coding: utf-8
 import random
 import evaluate
 import numpy as np
@@ -18,13 +19,13 @@ class Gene():
         
     def individual(self):
         indexnum = [i for i in range(self.baseprenum)]
-        indexnum = random.shuffle(indexnum)
+        random.shuffle(indexnum)
         return indexnum
         
     def pop1(self):
         popultaion=[]
         for i in range(self.popsize):
-            popultaion.append[self.individual()]
+            popultaion.append(self.individual())
         return popultaion
         
         
@@ -32,17 +33,22 @@ class Gene():
     
     def fitness(self):
         popfitness=[]
+        #print(self.pop)
         for i in self.pop:      #i = [abcdefg] individual
             j = i[:self.baseusingnum]   #j: all base will be used in the individual
             parameter1 = []
             #parameter =  [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
             for k in range(3):
                 parameter1.append([self.parameter[k][l] for l in j])
-            parameter2 = [parameter1,parameter[3:]]
-            popfitness.append(evaluate.Evaluate(parameter2))
+            parameter2 = []
+            parameter2.extend(parameter1)
+            parameter2.extend(self.parameter[3:])
+            popfitness.append(evaluate.Evaluate(parameter2).Evaluate_main())
         fmax = max(popfitness)
+        print('fmax = %d'%fmax)
+        print(popfitness)
         popfitness = np.array(popfitness)
-        popfitness = -popfitness + fmax
+        popfitness = -popfitness + fmax + 5 
         popfitness = list(popfitness)
         return popfitness   #fitness value of each individual in pop
     
@@ -52,6 +58,8 @@ class Gene():
     def choose(self):
         chooseset=[]
         sumfitness = sum(self.F)
+        #print(sumfitness)
+        #print(self.F)
         choosepro = [i/sumfitness for i in self.F]
         choosesumpro = [self.F[0]]*len(self.F)
         for j in range(1,len(self.F)):
