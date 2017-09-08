@@ -13,8 +13,8 @@ class Gene():
         self.crosspro = crosspro #the probability of cross
         self.mutepro = mutepro #the probability of mutation
         self.iterationtime = iterationtime
-        self.pop = []
-        self.F = []
+        self.pop = self.pop1()
+        self.F = self.fitness()
         
     def individual(self):
         indexnum = [i for i in range(self.baseprenum)]
@@ -28,7 +28,7 @@ class Gene():
         return popultaion
         
         
-    self.pop = self.pop1()
+    
     
     def fitness(self):
         popfitness=[]
@@ -47,7 +47,7 @@ class Gene():
         return popfitness   #fitness value of each individual in pop
     
     
-    self.F = self.fitness()     
+    
     
     def choose(self):
         chooseset=[]
