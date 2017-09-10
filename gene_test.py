@@ -1,6 +1,7 @@
 #coding: utf-8
 import evaluate
 import gene
+import random
 
 '''
 def __init__  (self,baseprenum,parameter,popsize,baseusingnum,choosenum,crosspro,mutepro,iterationtime):
@@ -23,31 +24,40 @@ for i in range(10):
 	for j in range(10):
 		y[i*10+j] = i
 		
-basex = [3,7,7,5,6,6,5]
-basey = [5,3,7,2,7,8,4]
-baseh = [10]*7
+        
+basex=[]
+basey=[]
+for i in range(30):
+    basex.append(random.randint(0,9))
+    basey.append(random.randint(0,9))
+print("basex is %r"%basex)
+baseh = [10]*30
 h = [1.7]*100
 fc = 2900
-Tx = 38.2
-G = 10
+Tx = 80.2
+#TX = 38.2 ...
+G = 16.34
 htb = 10
 hre = 1.7
 Noise = -110
 rsrpthre = -88
-sinrthre = 0.7
+sinrthre = -3
 coverthre = 0.7
-nbaseallx = [3]
-nbaseally = [5]
+obaseallx = []
+obaseally = []
+obaseallx.extend(random.sample(basex,10))
+obaseally.extend(random.sample(basey,10))
 ncost = 300
 ocost = 100
-parameter1 = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
-baseprenum = 7
+parameter1 = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,obaseallx,obaseally,ncost,ocost]
+baseprenum = 30
 parameter = parameter1
-popsize = 4
+popsize = 8
 baseusingnum = 4
-choosenum =2
-crosspro = 0.7
+choosenum =6
+crosspro = 0.9
 mutepro = 0.1
-iterationtime = 10
+iterationtime = 2
+print("a's basex is %r"%parameter[0])
 a = gene.Gene(baseprenum,parameter,popsize,baseusingnum,choosenum,crosspro,mutepro,iterationtime)
 maxfit, bestindividual, cost = a.Gene_main()

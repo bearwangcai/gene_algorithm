@@ -3,7 +3,7 @@ from math import sqrt, log10
 from scipy.spatial import cKDTree
 class Evaluate:
 	def __init__(self,parameter):
-		#parameter = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
+		#parameter = [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,obaseallx,obaseally,ncost,ocost]
 		#print(parameter)
 		self.Nsample = len(parameter[3])
 		self.Nbase = len(parameter[0])
@@ -28,6 +28,7 @@ class Evaluate:
 		self.obaseally = parameter[16]
 		self.ncost = parameter[17]
 		self.ocost = parameter[18]
+		print("self.basex is %r"%self.basex)
 	
 	def loss(self,d):
 		if abs(d - 0) < 0.5:
@@ -65,8 +66,8 @@ class Evaluate:
 	return cover
 	'''
 	def coverage(self):
-		sinr=np.ones(self.Nsample)*self.Noise
-		rsrp=np.ones(self.Nsample)*(self.rsrpthre-10)
+		sinr=np.ones(self.Nsample)*pow(10,self.Noise/10)
+		rsrp=np.ones(self.Nsample)*pow(10,(self.rsrpthre-10)/10)
 		coverv=np.zeros(self.Nsample)
 		for i in range(self.Nsample):
 			for j in range(self.Nbase):
@@ -74,11 +75,13 @@ class Evaluate:
 				#print(d)
 				L = self.loss(d)
 				rsrp1 = self.Tx + self.G - L
+				#print("the %d sample, the %d base loss = %f" %(i,j,rsrp1))
+				rsrp1 = pow(10,rsrp1/10)
 				if rsrp1 > rsrp[i]:
 					rsrp[i] = rsrp1
 				else:
 					sinr[i] += rsrp1
-			coverv[i] = self.R(rsrp[i],sinr[i])
+			coverv[i] = self.R(10*log10(rsrp[i]),10*log10(sinr[i]))
 		cover = sum(coverv)/self.Nsample
 		return cover
 	
@@ -86,10 +89,13 @@ class Evaluate:
 	def cost(self):
 		j=0
 		basexy = list(zip(self.basex,self.basey))
+		print("basexy is %r"%basexy)
 		baseallxy = list(zip(self.obaseallx,self.obaseally))
+		print("baseallxy is %r"%baseallxy)
 		for i in range(self.Nbase):
 			if basexy[i] in baseallxy:
 				j+=1
+		print("j = %d"%j)
 		costvalue = j*self.ocost + (self.Nbase-j)*self.ncost
 		return costvalue
 	
@@ -97,6 +103,7 @@ class Evaluate:
 	def Evaluate_main(self):
 		cover = self.coverage()
 		costvalue = self.cost()
+		#print("cover = %f" %cover)
 		if cover >= self.coverthre:
 			evalute = costvalue * (1+cover)
 		else :
