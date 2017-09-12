@@ -30,7 +30,7 @@ basey=[]
 for i in range(30):
     basex.append(random.randint(0,9))
     basey.append(random.randint(0,9))
-print("basex is %r"%basex)
+#print("basex is %r"%basex)
 baseh = [10]*30
 h = [1.7]*100
 fc = 2900
@@ -57,7 +57,7 @@ baseusingnum = 4
 choosenum =6
 crosspro = 0.9
 mutepro = 0.1
-iterationtime = 2
-print("a's basex is %r"%parameter[0])
+iterationtime = 10
+#print("a's basex is %r"%parameter[0])
 a = gene.Gene(baseprenum,parameter,popsize,baseusingnum,choosenum,crosspro,mutepro,iterationtime)
 maxfit, bestindividual, cost = a.Gene_main()

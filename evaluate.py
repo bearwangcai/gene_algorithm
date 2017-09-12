@@ -28,7 +28,7 @@ class Evaluate:
 		self.obaseally = parameter[16]
 		self.ncost = parameter[17]
 		self.ocost = parameter[18]
-		print("self.basex is %r"%self.basex)
+		#print("self.basex is %r"%self.basex)
 	
 	def loss(self,d):
 		if abs(d - 0) < 0.5:
@@ -89,13 +89,13 @@ class Evaluate:
 	def cost(self):
 		j=0
 		basexy = list(zip(self.basex,self.basey))
-		print("basexy is %r"%basexy)
+		#print("basexy is %r"%basexy)
 		baseallxy = list(zip(self.obaseallx,self.obaseally))
-		print("baseallxy is %r"%baseallxy)
+		#print("baseallxy is %r"%baseallxy)
 		for i in range(self.Nbase):
 			if basexy[i] in baseallxy:
 				j+=1
-		print("j = %d"%j)
+		#print("j = %d"%j)
 		costvalue = j*self.ocost + (self.Nbase-j)*self.ncost
 		return costvalue
 	

@@ -15,6 +15,7 @@ class Gene():
         self.mutepro = mutepro #the probability of mutation
         self.iterationtime = iterationtime
         self.pop = self.pop1()
+        #print(self.pop)
         self.E,self.F = self.fitness()
         
     def individual(self):
@@ -34,19 +35,24 @@ class Gene():
     def fitness(self):
         popfitness=[]
         #print(self.pop)
-        print("fitness")
+        #print("fitness")
         for i in self.pop:      #i = [abcdefg] individual
+            #print("individual is %r"%i)
             j = i[:self.baseusingnum]   #j: all base will be used in the individual
+            #print("all base will be used in the individual is %r"%j)
             parameter1 = []
             #parameter =  [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
             #print("j is %r"%j)
             for k in range(3):
+                parameter10 = []
                 for l in j:
-                    parameter10 = []
                     parameter10.append(self.parameter[k][l])
+                    #print("l is %d"%l)
+                    #print("self.parameter[k][l] is %r"%self.parameter[k][l])
+                    #print("parameter10 is %r"%parameter10)
                 parameter1.append(parameter10)
-                #print("%d step parameter1 is %r"%(k,parameter1))
-            #print("parameter1 is %r"%parameter1)
+                #print("%d step parameter1 is should be basex or y or h of %d size: %r"%(k,self.baseusingnum,parameter1))
+            #print("parameter1 %r is should be basex, basey and baseh of %d size"%(parameter1,self.baseusingnum))
             parameter2 = []
             parameter2.extend(parameter1)
             parameter2.extend(self.parameter[3:])
@@ -65,15 +71,17 @@ class Gene():
     
     
     def choose(self):
-        print("choose")
+        #print("choose")
         chooseset=[]
         sumfitness = sum(self.F)
         #print("sumfitness = %f"%sumfitness)
         #print("self.F is %r" %self.F)
         #choosepro = [i/sumfitness for i in self.F]
         choosesumpro = [self.F[0]]*len(self.F)
+        #print("location 1")
         for j in range(1,len(self.F)):
             choosesumpro[j] = choosesumpro[j-1]+self.F[j]
+        #print("location 2")
         #print("step1 finished")
         choosesumpro = np.array(choosesumpro)
         #print(choosesumpro)
@@ -101,13 +109,14 @@ class Gene():
     
     
     def cross(self):
-        print("cross")
+        #print("cross")
         chooseset = self.choose()
         fitvalue = []
         #print("cross choose finished")
         chooseset = [str(i) for i in chooseset]  #the index of pop
         for j in chooseset:
             fitvalue.append(self.E[int(j)])   #the fitvalue of each individual choose from the pop
+        #print("location 3")
         crosspre = dict(zip(chooseset,fitvalue))  
         crolist = sorted(crosspre.items(), key = lambda x:x[1],reverse = False)
         #[('2', 6), ('1', 2.1), ('3', 1.2)]
@@ -144,10 +153,12 @@ class Gene():
             crossnew.extend(crossrest) #a new individual
             #print("the crossnew of 'self.pop.append(crossnew)' is %r"%crossnew)
             self.pop.append(crossnew) #add the new individual into pop
-            self.E,self.F = self.fitness()
+            #print("location 1")
+        self.E,self.F = self.fitness()
+            #print("location 2")
     
     def mutation(self):
-        print("mutation")
+        #print("mutation")
         mutepre = self.pop[random.sample(self.choose(),1)[0]]
         #print("mutepre is %r"%mutepre)
         mutepos = random.sample(range(len(mutepre)),2)
@@ -159,13 +170,15 @@ class Gene():
         
         
     def popleft(self):
-        print("popleft")
+        #print("popleft")
         #print("self.pop unchanged is %r"%self.pop)
         popnowindex = [str(i) for i in range(len(self.pop))]
         popnowfit,unum = self.fitness()
         popnow = dict(zip(popnowindex,popnowfit))
         popnow = sorted(popnow.items(), key = lambda x:x[1],reverse = False)
         poppre = []
+        
+        #for i in range(len(self.pop)):
         for i in range(self.popsize):
             poppre.append(self.pop[int(popnow[i][0])])
         #print("poppre is %r"%poppre)
@@ -198,8 +211,8 @@ class Gene():
         parameter1 = []
         #parameter =  [basex,basey,baseh,x,y,h,fc,Tx,G,htb,hre,Noise,rsrpthre,sinrthre,coverthre,nbaseallx,nbaseally,ncost,ocost]
         for k in range(3):
+            parameter10 = []
             for l in bestindividual[:self.baseusingnum]:
-                parameter10 = []
                 parameter10.append(self.parameter[k][l])
             parameter1.append(parameter10)
         print("parameter1 is %r"%parameter1)
@@ -207,6 +220,8 @@ class Gene():
         parameter2.extend(parameter1)
         parameter2.extend(self.parameter[3:])
         cost = (evaluate.Evaluate(parameter2).cost())
+        cover = (evaluate.Evaluate(parameter2).coverage())
         print("the cost of this individual is %r"%cost)
+        print("the cover of this individual is %r"%cover)
         print("\n\n\n")
         return minfit, bestindividual[:self.baseusingnum], cost
