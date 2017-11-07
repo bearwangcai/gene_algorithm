@@ -2,6 +2,7 @@
 import random
 import evaluate
 import numpy as np
+from copy import deepcopy
 
 class Gene():
     def __init__  (self,baseprenum,parameter,popsize,baseusingnum,choosenum,crosspro,mutepro,iterationtime):
@@ -69,7 +70,7 @@ class Gene():
     
     
     
-    
+    '''
     def choose(self):
         #print("choose")
         chooseset=[]
@@ -105,7 +106,14 @@ class Gene():
         chooseset = list(set(chooseset))
         #print("chooseset is %r ,pop length is %d, pop now is %r"%(chooseset,len(self.pop),self.pop))
         return chooseset    #return the index of pop
+    '''    
         
+    def choose(self):
+        Fpre = np.argsort(np.array(self.F))
+        choosesetpre = list(Fpre)
+        chooseset = choosesetpre[:self.choosenum]
+        return chooseset
+    
     
     
     def cross(self):
@@ -159,13 +167,17 @@ class Gene():
     
     def mutation(self):
         #print("mutation")
-        mutepre = self.pop[random.sample(self.choose(),1)[0]]
-        #print("mutepre is %r"%mutepre)
-        mutepos = random.sample(range(len(mutepre)),2)
-        #print("mutepos is %r"%mutepos)
-        mutepre[mutepos[0]],mutepre[mutepos[1]] = mutepre[mutepos[1]],mutepre[mutepos[0]]
-        #print("the mutepre of 'self.pop.append(mutepre)' is %r"%mutepre)
-        self.pop.append(mutepre)
+        choosepre = self.choose()
+        for i in range(len(choosepre)):
+            mutepre = deepcopy(self.pop[choosepre[i]])
+            #print("mutepre is %r"%mutepre)
+            mutepos1 = random.sample(range(self.baseusingnum),1)
+            mutepos2 = random.sample(range(self.baseusingnum,len(mutepre)),1)
+            #print("mutepos is %r"%mutepos)
+            #print(len(mutepos1),len(mutepos2))
+            mutepre[mutepos1[0]],mutepre[mutepos2[0]] = mutepre[mutepos2[0]],mutepre[mutepos1[0]]
+            #print("the mutepre of 'self.pop.append(mutepre)' is %r"%mutepre)
+            self.pop.append(mutepre)
         self.E,self.F = self.fitness()
         
         
